@@ -1,0 +1,26 @@
+input[type="text"] {
+    height: 60px;
+    padding-top: 0px;
+    font-size: 24px;
+}
+
+input[type="submit"] {
+    height: 60px;
+    font-size: 14px;
+}
+
+.playlist {
+    height: 350px;
+    width: 310px;
+    display: inline-block;
+}
+
+.playlist img {
+    height: 300px;
+    width: 300px;
+}
+
+#get-more {
+    margin-top: 50px;
+    margin-bottom: 30px;
+}

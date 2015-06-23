@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+{% include 'form.html' %}
+
+<div id="playlist-container">
+
+{% for playlist in music %}
+
+<div class="playlist">
+
+    <a href="{{ playlist['href'] }}">
+
+        <img src="{{ playlist['images'][0]['url'] }}"/>
+
+        <span class="caption">
+        {{ playlist['name'] }} by {{ playlist['owner']['id']}}
+        </span>
+
+    </a>
+</div>
+
+{% endfor %}
+
+</div>
+
+<button id="get-more" class="button-primary">More Playlists</button>
+
+<!-- Get more music asynchronously -->
+
+<script>
+// Define a function to query our API
+function getMusic(offset) {
+    console.log("Getting another set of results from " + offset);
+    $.post('http://localhost:8080/api/music', {'offset': offset}, function(data) {
+        // data is a list of playlist JSON items, so we need to iterate
+        console.log(data);
+        $.each(data.playlists, function(index, playlist) {
+            // now we have an individual playlist
+            // console.log to take a look
+            console.log(playlist);
+            // create the HTML div
+
+            var playlistImg = '<img src="' + playlist.images[0].url + '"/>';
+            var playlistCaption = '<span class="caption">' + playlist.name + " by " + playlist.owner.id + '</span>';
+            var playlistLink = '<a href="' + playlist.href + '">';
+                playlistLink += playlistImg;
+                playlistLink += playlistCaption;
+                playlistLink += '</a>';
+
+            var playlistDiv = $('<div class="playlist"></div>');
+            playlistDiv.append(playlistLink);
+
+            $('#playlist-container').append(playlistDiv);
+
+
+        }); // end each
+
+     } // end function(data)
+    ); // end post
+}
+
+// Set the global initial offset to 10, since we loaded 10 from the server
+var offset = 10;
+
+$(function() { // document.ready
+
+    // Call the function as soon as the page has loaded
+    getMusic(offset);
+    // Increase the offset since we just got 10 more items
+    offset += 10;
+
+}); // end document.ready
+
+// Make sure our button works
+$('#get-more').click(function() {
+    console.log("Getting music from position " + offset);
+    getMusic(offset);
+    offset += 10;
+})
+
+
+</script>
+
+{% endblock %}
